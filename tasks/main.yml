@@ -12,11 +12,13 @@
     - httpd
 
 - name: Enable httpd
-  lineinfile: dest=/etc/rc.conf.local line='httpd_flags=""' owner=root group=wheel mode=0644 create=yes
+  lineinfile: dest=/etc/rc.conf.local.d/httpd line='httpd_flags=""' owner=root group=wheel mode=0644 create=yes
   notify:
+    - rc.conf.local
     - httpd
 
 - name: Configure and Enable tftpd
-  lineinfile: dest=/etc/rc.conf.local line='tftpd_flags="/srv/tftpboot"' owner=root group=wheel mode=0644 create=yes
+  lineinfile: dest=/etc/rc.conf.local.d/tftpd line='tftpd_flags="/srv/tftpboot"' owner=root group=wheel mode=0644 create=yes
   notify:
+    - rc.conf.local
     - tftpd
