@@ -1,22 +1,22 @@
 ---
 - name: Create directories
-  file: path={{ item }} state=directory owner=root group=root mode=0755
+  file: path={{ item }} state=directory owner=root group=wheel mode=0755
   with_items:
     - /var/www/htdocs/preseed
     - /srv
     - /srv/tftpboot
 
 - name: Configure httpd
-  copy: src=httpd.conf dest=/etc/httpd.conf owner=root group=root mode=0644
+  copy: src=httpd.conf dest=/etc/httpd.conf owner=root group=wheel mode=0644
   notify:
     - httpd
 
 - name: Enable httpd
-  lineinfile: dest=/etc/rc.conf.local line='httpd_flags=""' owner=root group=root mode=0644 create=yes
+  lineinfile: dest=/etc/rc.conf.local line='httpd_flags=""' owner=root group=wheel mode=0644 create=yes
   notify:
     - httpd
 
 - name: Configure and Enable tftpd
-  lineinfile: dest=/etc/rc.conf.local line='tftpd_flags="/srv/tftpboot"' owner=root group=root mode=0644 create=yes
+  lineinfile: dest=/etc/rc.conf.local line='tftpd_flags="/srv/tftpboot"' owner=root group=wheel mode=0644 create=yes
   notify:
     - tftpd
