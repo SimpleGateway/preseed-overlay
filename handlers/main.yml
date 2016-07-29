@@ -1,0 +1,6 @@
+---
+- name: httpd
+  command: /etc/rc.d/httpd restart
+
+- name: tftpd
+  command: /etc/rc.d/tfptd restart
