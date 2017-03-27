@@ -22,3 +22,20 @@
   notify:
     - rc.conf.local
     - tftpd
+
+- name: Enable tftpproxy
+  lineinfile: dest=/etc/rc.conf.local.d/tftpproxy line='tftpproxy_flags=""' owner=root group=wheel mode=0644 create=yes
+  notify:
+    - rc.conf.local
+    - tftpproxy
+
+
+- name: Add tftpd firewall rules
+  template:
+    src: pf.tftpd.j2
+    dest: /etc/pf.d/10-tftpd
+    owner: root
+    group: wheel
+    mode: 0600
+  notify:
+    - pf.conf

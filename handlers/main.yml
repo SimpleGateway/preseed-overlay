@@ -4,3 +4,6 @@
 
 - name: tftpd
   command: /etc/rc.d/tftpd restart
+
+- name: tftpproxy
+  command: /etc/rc.d/tftpdproxy restart
