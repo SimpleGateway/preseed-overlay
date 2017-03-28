@@ -1,22 +1,17 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "true"
 {% for network in sg_networks %}
-{% if network.services or network.hosts %}
-{# Its really handy to know this interface later, so we just grab it here #}
-{% set interface = sg_interfaces|selectattr('name', 'equalto', network.attach_to)|first %}
-{% if interface.carpdev is defined %}
-{# OpenBSD recommends only filtering on the real interface #}
-{% set filter_interface = interface.carpdev %}
-{% else %}
-{% set filter_interface = interface.name %}
-{% endif %}
-{% endif %}
-{# First we setup the services, then we setup the NAT rules, then rdr rules #}
-{% if 'pxeboot' in network.services %}
-# The router will accept PXE (http) on this network.
-pass in on {{ filter_interface }} inet proto tcp to {{ filter_interface }} port www
+        {% if network.services and 'pxeboot' in network.services %}
+                {% set interface = sg_interfaces|selectattr('name', 'equalto', network.attach_to)|first %}
+                {% set filter_interface = interface.name %}
+                {% if interface.carpdev is defined %}
+                        {# OpenBSD recommends only filtering on the real interface #}
+                        {% set filter_interface = interface.carpdev %}
+                {% endif %}
+# The router will accept PXE (tftp/http) on this network.
+pass in on {{ filter_interface }} inet proto tcp to {{ interface.address | ipaddr('address') }} port www
 anchor "tftp-proxy/*"
-pass in quick on {{ filter_interface }} inet proto udp from {{ filter_inferface }} to port tftp divert-to 127.0.0.1 port 6969
-anchor "tftp-proxy/*"
-{% endif %}
+pass in on {{ filter_interface }} inet proto udp from any to port tftp divert-to 127.0.0.1 port 6969
+pass out on {{ filter_interface }} inet proto udp from {{ interface.address | ipaddr('address') }} to port tftp group proxy divert-reply
+        {% endif %}
 {% endfor %}
 {# The following blank line seperates multiple networks #}
-
