@@ -11,7 +11,7 @@
 pass in on {{ filter_interface }} inet proto tcp to {{ interface.address | ipaddr('address') }} port www
 anchor "tftp-proxy/*"
 pass in on {{ filter_interface }} inet proto udp from any to port tftp divert-to 127.0.0.1 port 6969
-pass out on {{ filter_interface }} inet proto udp from {{ interface.address | ipaddr('address') }} to port tftp group proxy divert-reply
+pass out on {{ filter_interface }} inet proto udp from {{ interface.address | ipaddr('address') }} to port tftp divert-reply
         {% endif %}
 {% endfor %}
 {# The following blank line seperates multiple networks #}
